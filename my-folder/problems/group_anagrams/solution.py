@@ -1,9 +1,16 @@
+from collections import defaultdict
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-        ret = {}
-        for s in strs:
-            k = ''.join(sorted(s))
-            if k not in ret:
-                ret[k] = []
-            ret[k].append(s)
-        return list(ret.values())
+        def hash(w):
+            h = 0
+            for c in w:
+                shift = 7*(ord(c)-ord('a'))
+                h += (1 << shift)
+            # print(bin(h))
+            return h
+        d = defaultdict(list)
+        for w in strs:
+            h = hash(w)
+            d[h].append(w)
+        
+        return list(d.values())
