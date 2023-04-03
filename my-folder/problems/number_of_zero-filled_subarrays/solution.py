@@ -1,17 +1,13 @@
 class Solution:
     def zeroFilledSubarray(self, nums: List[int]) -> int:
-        ways = 0
+        count = 0
+        total = 0
+        for num in nums:
+            if num == 0:
+                count += 1
+            elif count > 0:
+                total += (count * (count+1)) // 2
+                count = 0
         
-        i = 0
-        n = len(nums)
-        while i < n:
-            if nums[i] != 0:
-                i += 1 
-                continue
-            start = i
-            while i < n and nums[i] == 0:
-                i += 1
-            num = i-start
-            ways += (num*(num+1))//2
-        
-        return ways
+        total += (count * (count+1)) // 2
+        return total
