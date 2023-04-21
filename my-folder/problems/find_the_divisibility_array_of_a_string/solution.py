@@ -1,10 +1,8 @@
 class Solution:
     def divisibilityArray(self, word: str, m: int) -> List[int]:
+        ans = []
         rem = 0
-        div = []
-        for c in word:
-            rem = (rem*10 + int(c)) % m
-            div.append(1 if rem == 0 else 0)
-        
-        return div
-            
+        for d in word:
+            rem = (rem*10 + int(d))%m
+            ans.append(int(rem == 0))
+        return ans
