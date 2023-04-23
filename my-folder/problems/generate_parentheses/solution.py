@@ -1,14 +1,19 @@
 class Solution:
-    def addAll(self, s, n_notopen, n_open, ret):
-        if n_notopen == 0 and n_open == 0:
-            ret.append(s)
-        else:
-            if n_open > 0:
-                self.addAll(s + ')', n_notopen, n_open-1, ret)
-            if n_notopen > 0:
-                self.addAll(s + '(', n_notopen-1, n_open+1, ret)
             
     def generateParenthesis(self, n: int) -> List[str]:
         ret = []
-        self.addAll("", n, 0, ret)
+        prev = []
+        def add_all(op, rem):
+            if op == 0 and rem == 0:
+                ret.append(''.join(prev))
+                return
+            if op:
+                prev.append(')')
+                add_all(op-1, rem)
+                prev.pop()
+            if rem:
+                prev.append('(')
+                add_all(op+1, rem-1)
+                prev.pop()
+        add_all(0, n)
         return ret
