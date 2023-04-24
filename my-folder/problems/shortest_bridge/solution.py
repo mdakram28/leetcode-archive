@@ -31,8 +31,6 @@ class Solution:
                     else:
                         is_outside(r, c, q2, v2)
                         break
-        # print(q1)
-        # print(q2)
         d = 0
         while q1 and q2:
 
@@ -52,9 +50,6 @@ class Solution:
                         q1.append((nr, nc))
                         v1[nr][nc] = True
                         
-            # for r in range(n):
-            #     print('|'.join(str((int(v1[r][c]) | (int(v2[r][c])<<1)) or ' ') for c in range(n)) + "|")
-            # print("-"*(n*2))
             
             for _ in range(len(q2)):
                 r, c = q2.popleft()
@@ -64,15 +59,11 @@ class Solution:
                         continue
                     
                     if grid[nr][nc]:
-                        # print(nr, nc, grid[nr][nc])
                         return grid[nr][nc] + d - 1
                     else:
                         grid[nr][nc] = d
                         q2.append((nr, nc))
                         v2[nr][nc] = True
 
-            # for r in range(n):
-            #     print('|'.join(str((int(v1[r][c]) | (int(v2[r][c])<<1)) or ' ') for c in range(n)) + "|")
-            # print("-"*(n*2))
 
         return -1
