@@ -1,56 +1,32 @@
+from sortedcontainers import SortedList
+
 class Solution:
-    # TC - O((n - k)*log(k))
-    # SC - O(k)
-	# 121 ms, faster than 96.23%
-
-    def find_median(self, max_heap, min_heap, heap_size):
-        if heap_size % 2 == 1:
-            return -max_heap[0]
-        else:
-            return (-max_heap[0] + min_heap[0]) / 2
-
     def medianSlidingWindow(self, nums: List[int], k: int) -> List[float]:
-        max_heap = []
-        min_heap = []
-        heap_dict = defaultdict(int)
-        result = []
+        left = SortedList()
+        right = SortedList()
+        n = len(nums)
         
-        for i in range(k):
-            heappush(max_heap, -nums[i])
-            heappush(min_heap, -heappop(max_heap))
-            if len(min_heap) > len(max_heap):
-                heappush(max_heap, -heappop(min_heap))
+        for i in range(k-1):
+            right.add(nums[i])
         
-        median = self.find_median(max_heap, min_heap, k)
-        result.append(median)
+        while len(right)-len(left) > 1:
+            left.add(right.pop(0))
         
-        for i in range(k, len(nums)):
-            prev_num = nums[i - k]
-            heap_dict[prev_num] += 1
+        ans = []
+        for i in range(k-1, n):
+            right.add(nums[i])
+            left.add(right.pop(0))
 
-            balance = -1 if prev_num <= median else 1
+            if len(left) - len(right) > 1:
+                right.add(left.pop(-1))
             
-            if nums[i] <= median:
-                balance += 1
-                heappush(max_heap, -nums[i])
+            med = left[-1] if k%2 else (left[-1] + right[0])/2
+            ans.append(med)
+
+            rem = nums[i-k+1]
+            if rem <= med:
+                left.remove(rem)
             else:
-                balance -= 1
-                heappush(min_heap, nums[i])
-            
-            if balance < 0:
-                heappush(max_heap, -heappop(min_heap))
-            elif balance > 0:
-                heappush(min_heap, -heappop(max_heap))
-
-            while max_heap and heap_dict[-max_heap[0]] > 0:
-                heap_dict[-max_heap[0]] -= 1
-                heappop(max_heap)
-            
-            while min_heap and heap_dict[min_heap[0]] > 0:
-                heap_dict[min_heap[0]] -= 1
-                heappop(min_heap)
-
-            median = self.find_median(max_heap, min_heap, k)
-            result.append(median)
+                right.remove(rem)
         
-        return result
+        return ans
