@@ -8,6 +8,7 @@ class Solution:
             edges[b][a] = 1/val
         
         visited = {}
+        @cache
         def dfs(node, target, parent):
             if node in visited:
                 return None
