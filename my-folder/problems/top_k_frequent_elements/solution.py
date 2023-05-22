@@ -11,10 +11,10 @@ class Solution:
             revf[f].append(n)
         
         ret = []
-        for f in range(len(nums)+1, 0, -1):
+        f = len(nums)
+        while len(ret) < k:
             ret.extend(revf[f])
-            if len(ret) >= k:
-                break
+            f -= 1
         
-        return ret[:k]
+        return ret
         
