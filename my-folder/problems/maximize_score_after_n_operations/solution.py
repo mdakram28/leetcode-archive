@@ -1,22 +1,29 @@
 class Solution:
-    def maxScore(self, nums: List[int]) -> int:
-        gcd = {}
-        for i in range(len(nums)-1):
-            for j in range(i+1, len(nums)):
-                gcd[(nums[i], nums[j])] = math.gcd(nums[i], nums[j])
-        N = len(nums)
+    def maxScore(self, NUMS: List[int]) -> int:
+        N = len(NUMS)
 
-        @cache
-        def sub_score(nums: Tuple[int]) -> int:
-            nonlocal N
-            if len(nums) == 0: return 0
-            ans = 0
-            ind = (N - len(nums))//2 + 1
-            for i in range(len(nums)-1):
-                for j in range(i+1, len(nums)):
-                    sub_arr = tuple(n for k,n in enumerate(nums) if k != i and k != j)
-                    ans = max(ans, ind*gcd[(nums[i], nums[j])] + sub_score(sub_arr))
-            # print(nums, ind, ans)
-            return ans
-        
-        return sub_score(tuple(nums))
+        gcd = {}
+        for i in range(N-1):
+            for j in range(i+1, N):
+                gcd[(i, j)] = math.gcd(NUMS[i], NUMS[j])
+
+        score = defaultdict(int)
+        q = [(0, tuple(NUMS), 0)]
+
+        while q:
+            # print(q)
+            s, nums, ind = heappop(q)
+            ind+=1
+
+            for i in range(N-1):
+                if nums[i] == 0: continue
+                for j in range(i+1, N):
+                    if nums[j] == 0: continue
+
+                    new_s = s - ind * gcd[(i, j)]
+                    new_nums = nums[:i] + (0,) + nums[i+1:j] + (0,) + nums[j+1:]
+                    if new_s < score[new_nums]:
+                        score[new_nums] = new_s
+                        heappush(q, (new_s, new_nums, ind))
+        # print(score)
+        return -score[(0,)*N]
