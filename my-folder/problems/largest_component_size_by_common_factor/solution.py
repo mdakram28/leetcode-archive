@@ -11,31 +11,51 @@ def sieve(n):
     return pf
 
 def fact(n, pf):
+    ans = set()
     while n>1:
         f = pf[n]
-        yield f
+        ans.add(f)
         while n%f == 0:
             n //= f
+    return ans
 
 class Solution:
     def largestComponentSize(self, nums: List[int]) -> int:
         n = len(nums)
 
-        MAXN = 10**5+5
+        MAXN = max(nums)+2
         pf = sieve(MAXN)
 
         def lcm(a, b):
             return (a*b)//math.gcd(a, b)
 
-        uf = UnionFind(MAXN)
+        # uf = UnionFind(MAXN)
+        g = defaultdict(set)
         
         for num in nums:
-            for f in fact(num, pf):
-                uf.merge(num, f)
+            factors = fact(num, pf)
+            for f in factors:
+                g[f].update(factors)
+
+        # print({k:v for k, v in g.items()})
+
+        visited = defaultdict(int)
+        def dfs(at, i):
+            if visited[at]: return
+            visited[at] = i
+            for to in g[at]:
+                dfs(to, i)
+        
+        # ans = 0
+        for at in g.keys():
+            # prev_l = len(seen)
+            dfs(at, at)
+            # ans = max(ans, len(seen)-prev_l)
 
         f = defaultdict(int)
         for num in nums:
-            f[uf.get_rep(num)] += 1 
+            f[visited[pf[num]]] += 1
+
         return max(f.values())
 
 class UnionFind:
