@@ -1,23 +1,23 @@
 class UndergroundSystem:
 
     def __init__(self):
-        self.enroute = {}
-        self.times_count = defaultdict(int)
-        self.times_total = defaultdict(int)
+        self.trip_starts = {}
+        self.trip_count = collections.defaultdict(int)
+        self.trip_times = collections.defaultdict(int) 
 
     def checkIn(self, id: int, stationName: str, t: int) -> None:
-        self.enroute[id] = (stationName, t)
-        
+        self.trip_starts[id] = (stationName, t)
 
-    def checkOut(self, id: int, endStation: str, endTime: int) -> None:
-        startStation, startTime = self.enroute[id]
-        route = (startStation, endStation)
-        self.times_count[route] += 1
-        self.times_total[route] += endTime - startTime
+    def checkOut(self, id: int, stationName: str, t: int) -> None:
+        startStation, startTime = self.trip_starts[id]
+        del self.trip_starts[id]
+        trip = (startStation, stationName)
+        self.trip_count[trip] += 1
+        self.trip_times[trip] += t - startTime
 
     def getAverageTime(self, startStation: str, endStation: str) -> float:
-        route = (startStation, endStation)
-        return self.times_total[route]/self.times_count[route]
+        trip = (startStation, endStation)
+        return self.trip_times[trip]/self.trip_count[trip]
 
 
 # Your UndergroundSystem object will be instantiated and called as such:
