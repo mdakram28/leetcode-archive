@@ -3,16 +3,16 @@ class Solution:
         n = len(nums)
         end = 0
         total = 0
+        ans = float('inf')
 
-        min_length = float('inf')
         for start in range(n):
-            while end < n and total < target:
+            while total < target and end < n:
                 total += nums[end]
                 end += 1
             
             if total >= target:
-                min_length = min(min_length, end-start)
+                ans = min(ans, end-start)
             
             total -= nums[start]
         
-        return min_length if min_length != float('inf') else 0
+        return 0 if ans == float('inf') else ans
