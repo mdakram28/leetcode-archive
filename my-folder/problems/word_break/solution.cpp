@@ -1,47 +1,67 @@
+class TrieNode;
+
+class TrieNode {
+public:
+    unordered_map<char, TrieNode*> child;
+    bool is_end = false;
+};
+
+class Trie {
+public:
+    TrieNode root;
+    void insert(string& word) {
+        TrieNode* node = &root;
+        for(char c : word) {
+            TrieNode *nextNode = node->child[c];
+            if (nextNode == nullptr) {
+                nextNode = new TrieNode();
+                node->child[c] = nextNode;
+            }
+            node = nextNode;
+        }
+        node->is_end = true;
+    }
+};
+
 class Solution {
 public:
-    bool wordBreak(string s, vector<string> &wordDict) {
-        auto numWords = wordDict.size();
-        auto dpSize = s.size() + 1;
-//        vector<int> wordLength(numWords);
-        vector<int> numWordsOfLength(22);
-        vector<bool> dp(dpSize);
+    bool search(vector<vector<int>> &g, vector<bool> &visited, int target, int at) {
+        if (at == target) return true;
+        if (visited[at]) return false;
+        visited[at] = true;
 
-        for (int i = 0; i < numWords; i++) {
-//            wordLength[i] = (int) wordDict[i].size();
-            numWordsOfLength[wordDict[i].size()]++;
+        for(int to : g[at]) {
+            if (search(g, visited, target, to)) return true;
         }
 
-        dp[0] = true;
-        for (int wordEnd = 1; wordEnd < dpSize; wordEnd++) {
-            int wordLengthLimit = min(20, wordEnd);
-            for (int backWordLength = 1; backWordLength <= wordLengthLimit; backWordLength++) {
-                int wordStart = wordEnd - backWordLength;
-                if (dp[wordStart] && numWordsOfLength[backWordLength]) {
+        return false;
+    }
+    bool wordBreak(string s, vector<string>& wordDict) {
+        Trie trie;
+        for(auto word : wordDict) {
+            trie.insert(word);
+        }
+        vector<vector<int>> g(s.length());
+        vector<bool> visited(s.length());
 
-                    for (int wordIndex = 0; wordIndex < numWords; wordIndex++) {
-                        if (wordDict[wordIndex].size() == backWordLength) {
+        TrieNode* root = &trie.root;
+        for(int i=0; i<s.length(); i++) {
+            
+            TrieNode* node = root;
+            for(int j=i;; j++) {
 
-                            bool isEqual = true;
-                            for (int i = 0; i < backWordLength; i++) {
-                                if (wordDict[wordIndex][i] != s[wordStart + i]) {
-                                    isEqual = false;
-                                    break;
-                                }
-                            }
-
-                            if (isEqual) {
-                                dp[wordEnd] = true;
-                            }
-
-                        }
-                    }
-
-
+                if (node->is_end) {
+                    g[i].push_back(j);
                 }
+
+                if (j >= s.length() || node->child.find(s[j]) == node->child.end()) {
+                    break;
+                }
+                node = node->child[s[j]];
             }
+
         }
 
-        return dp[dpSize - 1];
+        return search(g, visited, s.length(), 0);
     }
 };
