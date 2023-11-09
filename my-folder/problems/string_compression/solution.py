@@ -1,28 +1,31 @@
 class Solution:
     def compress(self, chars: List[str]) -> int:
-        j = 0
-        start = 0
-        for i in range(1, len(chars)):
-            if chars[i] == chars[i-1]:
+        end = 0
+
+        prev = chars[0]
+        count = 0
+        for c in chars:
+            if c == prev:
+                count += 1
                 continue
             
-            chars[j] = chars[start]
+            chars[end] = prev
+            end += 1
+            if count > 1:
+                for d in str(count):
+                    chars[end] = d
+                    end += 1
 
-            if (i-start) > 1:
-                num = str(i-start)
-                for j, d in zip(range(j+1, 20000), num):
-                    chars[j] = d
-            
-            j += 1
-            start = i
+            count = 1
+            prev = c
         
         
-        chars[j] = chars[start]
-
-        if (len(chars)-start) > 1:
-            num = str(len(chars)-start)
-            for j, d in zip(range(j+1, 20000), num):
-                chars[j] = d
+        chars[end] = prev
+        end += 1
+        if count > 1:
+            for d in str(count):
+                chars[end] = d
+                end += 1
         
-        j += 1
-        return j
+        while len(chars) > end:
+            chars.pop()
