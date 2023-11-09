@@ -2,18 +2,31 @@ from sortedcontainers import SortedList
 
 class Solution:
     def minInterval(self, intervals: List[List[int]], queries: List[int]) -> List[int]:
-        intervals.append([float('inf'), float('inf')])
-        intervals.sort(reverse=True, key=lambda x: x[0])
-        
-        sizes = [(float('inf'), float('inf'))]
-        ans = {}
+        EV_ADD = 1
+        EV_REM = 2
+        EV_Q = 3
 
-        for q in sorted(queries):
-            while intervals[-1][0] <= q:
-                start, end = intervals.pop()
-                heappush(sizes, (end-start+1, end))
-            while sizes[0][1] < q:
-                heappop(sizes)
-            ans[q] = sizes[0][0]
+        events = [(l, EV_ADD, i) for i, (l, r) in enumerate(intervals)]
+        events += [(r+1, EV_REM, i) for i, (l, r) in enumerate(intervals)]
+        events += [(t, EV_Q, i) for i, t in enumerate(queries)]
+
+        events.sort()
+        active = []
+        removed = defaultdict(int)
+        ans = [0] * len(queries)
+
+        for t, ev, i in events:
+            # print(t, ev, i)
+            if ev == EV_ADD:
+                l, r = intervals[i]
+                heappush(active, r-l+1)
+            elif ev == EV_REM:
+                l, r = intervals[i]
+                removed[r-l+1] += 1
+            else:
+                while active and removed[active[0]] > 0:
+                    removed[heappop(active)] -= 1
+                # print(i, active, removed)
+                ans[i] = active[0] if active else -1
         
-        return [ans[q] if ans[q]!=float('inf') else -1 for q in queries]
+        return ans
