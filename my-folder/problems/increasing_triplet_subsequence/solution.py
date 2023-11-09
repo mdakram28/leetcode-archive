@@ -1,13 +1,18 @@
 class Solution:
     def increasingTriplet(self, nums: List[int]) -> bool:
-        f, s = (1<<31), (1<<31)
-        for num in nums:
-            if num <= f:
-                f = num
-            elif num <= s:
-                s = num
-            else:
+        lowest = float('inf')
+        minb = float('inf')
+
+        for k, num in enumerate(nums):
+
+            if num > minb:
                 return True
-        return False
+
+            if num > lowest:
+                # can be b
+                minb = min(minb, num)
             
-        
+            if num < lowest:
+                lowest = num
+
+        return False
