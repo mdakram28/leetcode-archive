@@ -1,22 +1,11 @@
-
 class Solution:
     def equalPairs(self, grid: List[List[int]]) -> int:
-        n = len(grid)
-        root = {}
-
+        rowcnt = defaultdict(int)
         for row in grid:
-            node = root
-            for val in row:
-                node = node.setdefault(val, {})
-            node["count"] = node.get('count', 0) + 1
-        
+            rowcnt[tuple(row)] += 1
+
         ans = 0
-        for c in range(n):
-            node = root
-            for r in range(n):
-                if grid[r][c] not in node: break
-                node = node[grid[r][c]]
-            else:
-                ans += node["count"]
-        
+        for c in range(len(grid[0])):
+            col = tuple(grid[r][c] for r in range(len(grid)))
+            ans += rowcnt[col]
         return ans
