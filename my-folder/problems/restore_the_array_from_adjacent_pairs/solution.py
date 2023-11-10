@@ -1,25 +1,25 @@
 class Solution:
     def restoreArray(self, adjacentPairs: List[List[int]]) -> List[int]:
-        n = len(adjacentPairs) + 1
-        adj = collections.defaultdict(list)
-
-        for n1, n2 in adjacentPairs:
-            adj[n1].append(n2)
-            adj[n2].append(n1)
+        g = defaultdict(list)
+        for a, b in adjacentPairs:
+            g[a].append(b)
+            g[b].append(a)
         
-        node = next(filter(lambda x: len(adj[x])==1,adj.keys()))
-        ret = []
+        start = None
+        for at, to in g.items():
+            if len(to) == 1:
+                start = at
+        
+        at = start
         prev = None
+        arr = []
 
         while True:
-            ret.append(node)
-            for a in adj[node]:
-                if a != prev:
-                    prev = node
-                    node = a
-                    break
+            arr.append(at)
+            for to in g[at]:
+                if to == prev: continue
+                prev, at = at, to
+                break
             else:
                 break
-        
-        return ret
-
+        return arr
