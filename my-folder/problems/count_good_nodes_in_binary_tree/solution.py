@@ -5,8 +5,17 @@
 #         self.left = left
 #         self.right = right
 class Solution:
-    def goodNodes(self, node: TreeNode, max_val = -float('inf')) -> int:
-        if not node: return 0
-        ret = 1 if node.val >= max_val else 0
-        max_val = max(max_val, node.val)
-        return ret + self.goodNodes(node.left, max_val) + self.goodNodes(node.right, max_val)
+    def goodNodes(self, root: TreeNode) -> int:
+        st = [(root, -10000)]
+        ans = 0
+        while st:
+            at, c = st.pop()
+            if at.val >= c:
+                ans += 1
+            c = max(c, at.val)
+            if at.left:
+                st.append((at.left, c))
+            if at.right:
+                st.append((at.right, c))
+        
+        return ans
