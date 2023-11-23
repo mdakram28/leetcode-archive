@@ -7,20 +7,19 @@
 class Solution:
     def longestZigZag(self, root: Optional[TreeNode]) -> int:
         
-        max_length = 0
-        def dfs(node, from_left, prev_len):
-            nonlocal max_length
-            if node is None: return 0
-            max_length = max(max_length, prev_len)
-            
-            if from_left:
-                dfs(node.right, False, prev_len+1)
-                dfs(node.left, True, 1)
-            else:
-                dfs(node.left, True, prev_len+1)
-                dfs(node.right, False, 1)
+        ans = 0
+        @cache
+        def dfs(node):
+            nonlocal ans
+            if node is None: return 0, 0
+            ll, lr = dfs(node.left)
+            rl, rr = dfs(node.right)
+            l = 1 + lr
+            r = 1 + rl
+            ans = max(ans, l, r)
+            return l, r
         
-        dfs(root.left, True, 1)
-        dfs(root.right, False, 1)
+        dfs(root)
 
-        return max_length
+        return ans-1
+        
