@@ -8,26 +8,23 @@
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
 
+        lca = None
+        def dfs(node):
+            nonlocal lca
+            if node is None: return None
 
-        def find(at, node, st):
-            if at is None: return False
-            if at == node or find(at.left, node, st) or find(at.right, node, st): 
-                st.append(at)
-                return True
-            return False
+            l = dfs(node.left)
+            if lca is not None: return None
+            r = dfs(node.right)
+
+            pf = p if node == p or l == p or r == p else None
+            qf = q if node == q or l == q or r == q else None
+
+            if pf and qf:
+                lca = node
+                return None
+            else:
+                return pf or qf
         
-
-        P = []
-        Q = []
-        find(root, p, P)
-        find(root, q, Q)
-        P.reverse()
-        Q.reverse()
-        # print([n.val for n in P], [n.val for n in Q])
-        
-        i = 0
-        lim = min(len(P), len(Q))
-
-        while i < lim and P[i] == Q[i]:
-            i += 1
-        return P[i-1]
+        dfs(root)
+        return lca
