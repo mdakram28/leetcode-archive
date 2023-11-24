@@ -1,4 +1,4 @@
 class Solution:
     def maxCoins(self, piles: List[int]) -> int:
         piles.sort(reverse=True)
-        return sum(piles[i*2+1] for i in range(len(piles)//3))
+        return sum(piles[i] for i in range(1, (len(piles)//3)*2+1, 2))
