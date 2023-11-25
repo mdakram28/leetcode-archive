@@ -1,18 +1,24 @@
 class Solution:
     def minimumBeautifulSubstrings(self, s: str) -> int:
-        powers = set()
-        for i in count(0):
-            if 5**i > 1<<15: break
-            powers.add(bin(5**i)[2:])
+        powers = {1, 5, 25, 125, 625, 3125, 15625, 78125, 390625, 1953125}
+
+        @cache
+        def partition(l):
+            if l == len(s): return 0
+            if s[l] == '0': return float('inf')
+            
+            ans = float('inf')
+            num = 0
+            for r in range(l, len(s)):
+                num = (num<<1)
+                if s[r] == '1':
+                    num |= 1
+                if num in powers:
+                    ans = min(ans, 1+partition(r+1))
+            
+            return ans
         
-        # print(powers)
-        dp = [float('inf')]*len(s) + [0]
-        
-        for i in range(len(s)-1, -1, -1):
-            if s[i] == '0': continue
-            for j in range(i+1, len(s)+1):
-                # print(i,j,s[i:j], s[i:j] in powers)
-                if s[i:j] in powers:
-                    dp[i] = min(dp[i], 1+dp[j])
-        # print(dp)
-        return dp[0] if dp[0] !=float('inf') else -1
+        ans = partition(0)
+        if ans == float('inf'):
+            return -1
+        return ans
