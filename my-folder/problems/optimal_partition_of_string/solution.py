@@ -1,12 +1,14 @@
 class Solution:
     def partitionString(self, s: str) -> int:
-        f = collections.defaultdict(int)
-        count = 0
-        for i in range(len(s)):
-            if f[s[i]] > 0:
-                count += 1
-                f.clear()
-
-            f[s[i]] += 1
         
-        return count + 1
+        dp = [float('inf')] * (len(s)+1)
+        dp[-1] = 0
+
+        for r in range(len(s)):
+            found = set()
+            for l in range(r, -1, -1):
+                if s[l] in found: break
+                dp[r] = min(dp[r], 1+dp[l-1])
+                found.add(s[l])
+
+        return dp[-2]
