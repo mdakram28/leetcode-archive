@@ -25,4 +25,3 @@ class Solution:
         ret = cut_into(d, 0)
 
         return -1 if ret == float('inf') else ret
-
