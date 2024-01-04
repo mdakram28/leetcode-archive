@@ -1,16 +1,13 @@
 class Solution:
     def minOperations(self, nums: List[int]) -> int:
-        freq = defaultdict(int)
-        for num in nums:
-            freq[num] += 1
-        
-        total = 0
-        for count in freq.values():
-            if count == 1:
+        ans = 0
+        for count in Counter(nums).values():
+            for op3 in range(count//3, max((count//3)-2, -1), -1):
+                op2 = (count-op3*3)//2
+                if op3*3 + op2*2 == count:
+                    ans += op3+op2
+                    break
+            else:
                 return -1
-            while count > 0 and count % 3 != 0:
-                total += 1
-                count -= 2
-            total += count//3
         
-        return total
+        return ans
