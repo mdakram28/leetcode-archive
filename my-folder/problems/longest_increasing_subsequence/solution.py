@@ -1,11 +1,9 @@
-from sortedcontainers import SortedList
 class Solution:
     def lengthOfLIS(self, nums: List[int]) -> int:
-        ans = []
-        for num in nums:
-            i = bisect_left(ans, num)
-            if i == len(ans):
-                ans.append(num)
-            else:
-                ans[i] = num
-        return len(ans)
+        ans = 0
+        for i, num in enumerate(nums):
+            ind = bisect_left(nums, num, hi=ans)
+            nums[ind] = num
+            ans = max(ans, ind+1)
+        
+        return ans
