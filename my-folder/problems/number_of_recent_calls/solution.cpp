@@ -1,14 +1,16 @@
 class RecentCounter {
-    queue<int> times;
+std::queue<int> q;
 public:
     RecentCounter() {
-        
     }
     
     int ping(int t) {
-        times.push(t);
-        while((t-times.front()) > 3000) times.pop();
-        return times.size();
+        q.push(t);
+
+        while (q.front() < t-3000) {
+            q.pop();
+        }
+        return q.size();
     }
 };
 
