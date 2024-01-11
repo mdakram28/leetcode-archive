@@ -1,57 +1,30 @@
-template<class T>
-struct Node {
-    unordered_map<T, Node*> next;
-    int count;
-};
+std::size_t hashRow(std::vector<std::vector<int>> const& grid, int r) {
+  std::size_t seed = grid.size();
+  for(auto& i : grid[r]) {
+    seed ^= i + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+  }
+  return seed;
+}
 
-template<class T>
-class Trie {
-    Node<T> *root;
-public:
-    Trie() {
-        root = new Node<T>();
-    }
-    void add(vector<T> &vals) {
-        Node<T> *at = root;
-        for(T &val: vals) {
-            if (at->next.find(val) == at->next.end()) {
-                Node<T> *newNode = new Node<T>();
-                at->next[val] = newNode;
-                at = newNode;
-            } else {
-                at = at->next[val];
-            }
-        }
-        at->count++;
-    }
-    int getCount(vector<T> &vals) {
-        Node<T> *at = root;
-        for(T &val: vals) {
-            if (at->next.find(val) == at->next.end()) {
-                return 0;
-            } else {
-                at = at->next[val];
-            }
-        }
-        return at->count;
-    }
-};
+std::size_t hashCol(std::vector<std::vector<int>> const& grid, int c) {
+  std::size_t seed = grid.size();
+  for(int r=0; r<grid.size(); r++) {
+    seed ^= grid[r][c] + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+  }
+  return seed;
+}
 
 class Solution {
 public:
     int equalPairs(vector<vector<int>>& grid) {
-        Trie<int> t;
-        for(auto row: grid) {
-            t.add(row);
+        std::unordered_map<size_t, int> hashCount;
+        int ans = 0;
+        for(int r=0; r<grid.size(); r++) {
+            hashCount[hashRow(grid, r)]++;
         }
-        int total = 0;
-        for(int c=0; c<grid[0].size(); c++) {
-            vector<int> col;
-            for(int r=0; r<grid.size(); r++) {
-                col.push_back(grid[r][c]);
-            }
-            total += t.getCount(col);
+        for(int c=0; c<grid.size(); c++) {
+            ans += hashCount[hashCol(grid, c)];
         }
-        return total;
+        return ans;       
     }
 };
