@@ -1,18 +1,18 @@
 class StockSpanner {
-    stack<pair<int, int>> st;
-    int i;
+std::vector<std::pair<int, int>> st = {{INT_MAX, -1}};
+int i = 0;
+
 public:
     StockSpanner() {
-        st.push(make_pair(INT_MAX, 0));
-        i = 1;
     }
     
     int next(int price) {
-        while(st.top().first <= price) {
-            st.pop();
+        while (st[st.size()-1].first <= price) {
+            st.pop_back();
         }
-        int ret = i - st.top().second;
-        st.push(make_pair(price, i++));
+        int ret = i-st[st.size()-1].second;
+        st.push_back({price, i});
+        i++;
         return ret;
     }
 };
