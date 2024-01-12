@@ -1,16 +1,21 @@
 class Solution {
 public:
     int maxOperations(vector<int>& nums, int k) {
-        unordered_map<int, int> vals;
-        int t = 0;
-        for(int num: nums) {
-            if (vals[k-num]) {
-                vals[k-num]--;
-                t++;
+        std::sort(nums.begin(), nums.end());
+        const int n = nums.size();
+        int count = 0;
+        int l=0, r=n-1;
+        while (l < r) {
+            const int total = nums[l] + nums[r];
+            if (total == k) {
+                count++;
+                l++;r--;
+            } else if (total < k) {
+                l++;
             } else {
-                vals[num]++;
+                r--;
             }
         }
-        return t;
+        return count;
     }
 };
