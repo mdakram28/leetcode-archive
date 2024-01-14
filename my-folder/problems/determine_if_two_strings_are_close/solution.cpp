@@ -1,32 +1,29 @@
-template<typename K, typename V>
-std::vector<V> values(std::unordered_map<K, V> m) {
-    std::vector<V> ret;
-    for(auto &p: m) {
-        ret.push_back(p.second);
-    }
-    std::sort(ret.begin(), ret.end());
-    return ret;
-}
-
-template<typename K, typename V>
-std::vector<K> keys(std::unordered_map<K, V> m) {
-    std::vector<K> ret;
-    for(auto &p: m) {
-        ret.push_back(p.first);
-    }
-    std::sort(ret.begin(), ret.end());
-    return ret;
-}
-
 class Solution {
+    int count1[26], count2[26];
 public:
     bool closeStrings(string word1, string word2) {
-        std::unordered_map<char, int> f1;
-        std::unordered_map<char, int> f2;
+        if (word1.length() != word2.length()) return false;
 
-        for(char c: word1) f1[c]++;
-        for(char c: word2) f2[c]++;
+        // memset(count1, 0, sizeof(count1));
+        // memset(count2, 0, sizeof(count2));
 
-        return keys(f1) == keys(f2) && values(f1) == values(f2);
+        for(char c: word1) {
+            count1[c-'a']++;
+        }
+        for(char c: word2) {
+            count2[c-'a']++;
+        }
+
+        std::unordered_map<int, int> v1, v2;
+
+        for(int i=0; i<26; i++) {
+            if ((count1[i]==0) != (count2[i]==0)) return false;
+            if (count1[i] > 0) {
+                v1[count1[i]]++;
+                v2[count2[i]]++;
+            }
+        }
+
+        return v1 == v2;
     }
 };
