@@ -1,9 +1,6 @@
 class Solution:
+    @cache
     def climbStairs(self, n: int) -> int:
-        if n == 1:
-            return 1
-        a = 1
-        b = 1
-        for i in range(1, n):
-            a, b = b, (a+b)
-        return b
+        if n == 0: return 1
+        if n < 0: return 0
+        return self.climbStairs(n-1) + self.climbStairs(n-2)
