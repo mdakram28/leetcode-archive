@@ -1,9 +1,8 @@
 class Solution:
     def rob(self, nums: List[int]) -> int:
-        max_inc = nums[0]
-        max_exc = 0
+        dp = [0] * (len(nums)+2)
 
-        for num in nums[1:]:
-            max_inc, max_exc = (max_exc + num), max(max_inc, max_exc)
+        for i in range(len(nums)):
+            dp[i] = max(nums[i] + dp[i-2], dp[i-1])
         
-        return max(max_inc, max_exc)
+        return dp[len(nums)-1]
