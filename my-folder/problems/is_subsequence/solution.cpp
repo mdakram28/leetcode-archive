@@ -1,14 +1,14 @@
 class Solution {
 public:
     bool isSubsequence(string s, string t) {
-        int si=0, ti=0;
-        int tl = t.length(), sl=s.length();
-        while(ti < tl && si < sl) {
-            if (s[si] == t[ti]) {
-                si++;
+        int i=0;
+
+        for(int j=0; j<t.size() && i<s.size(); j++) {
+            if (s[i] == t[j]) {
+                i++;
             }
-            ti++;
         }
-        return si == sl;
+
+        return i == s.size();
     }
 };
